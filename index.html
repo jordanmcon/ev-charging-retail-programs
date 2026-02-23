@@ -19,7 +19,6 @@ body{font-family:"Figtree",sans-serif;background:var(--ant0);color:var(--ant);mi
 ::-webkit-scrollbar-thumb{background:var(--ant2);border-radius:3px}
 
 header{background:var(--ant);border-bottom:2px solid var(--yel);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
-
 .header-tag{font-size:11px;font-weight:700;color:var(--ant3);text-transform:uppercase;letter-spacing:1.2px;display:flex;align-items:center;gap:5px}
 .bolt{color:var(--yel)}
 
@@ -86,9 +85,12 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 .tot-eyebrow{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;color:var(--yel);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:3px}
 .tot-val{font-size:clamp(34px,4.5vw,50px);font-weight:900;color:var(--wht);letter-spacing:-2px;line-height:1;margin-bottom:3px}
 .tot-sub{font-size:12px;color:var(--ant4);margin-bottom:18px}
-.bar-chart{display:flex;gap:6px;align-items:flex-end;height:72px;margin-bottom:10px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center}
-.bar-rect{width:100%;border-radius:3px 3px 0 0;transition:height .4s ease;min-height:4px}
+.bar-chart{display:flex;gap:6px;align-items:flex-end;height:80px;margin-bottom:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+/* stacked bar: store-lift on top, direct below */
+.bar-stack{width:100%;display:flex;flex-direction:column;border-radius:3px 3px 0 0;overflow:hidden}
+.bar-seg-lift{width:100%;min-height:0;transition:height .4s ease}
+.bar-seg-direct{width:100%;min-height:4px;transition:height .4s ease}
 .bar-lbls{display:flex;gap:6px;margin-bottom:18px}
 .bar-lbl-col{flex:1;text-align:center}
 .bar-lbl-name{font-size:9px;font-weight:700;color:var(--ant4);text-transform:uppercase;letter-spacing:.4px;line-height:1.2}
@@ -103,9 +105,14 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 .vc-icon-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
 .vc-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
 .vc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ant5)}
-.vc-sub{font-size:11px;color:var(--ant4);line-height:1.4;margin-bottom:10px}
-.vc-amt{font-size:30px;font-weight:900;color:var(--ant);letter-spacing:-1px;line-height:1}
+.vc-sub{font-size:11px;color:var(--ant4);line-height:1.4;margin-bottom:12px}
+.vc-amounts{display:flex;flex-direction:column;gap:4px}
+.vc-amt-direct{font-size:30px;font-weight:900;color:var(--ant);letter-spacing:-1px;line-height:1}
 .vc-unit{font-size:12px;font-weight:500;color:var(--ant4);margin-left:5px}
+.vc-lift-pill{display:inline-flex;align-items:center;gap:5px;background:var(--ant0);border-radius:6px;padding:5px 10px;margin-top:2px;width:fit-content}
+.vc-lift-icon{font-size:11px}
+.vc-lift-label{font-size:11px;color:var(--ant6)}
+.vc-lift-val{font-size:13px;font-weight:800;color:var(--ant)}
 .bd-toggle{border-top:1px solid var(--ant0);padding:8px 22px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:11px;font-weight:600;color:var(--ant5);text-transform:uppercase;letter-spacing:.8px;transition:background .15s}
 .bd-toggle:hover{background:var(--ant0)}
 .bd-arrow{transition:transform .2s;font-size:10px}
@@ -115,6 +122,9 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 .bd-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
 .bd-row-lbl{color:var(--ant6)}
 .bd-row-val{font-weight:700;color:var(--ant)}
+.bd-divider{height:1px;background:var(--ant1);margin:8px 0}
+.bd-row-highlight .bd-row-lbl{color:var(--ant);font-weight:700}
+.bd-row-highlight .bd-row-val{color:var(--ant)}
 .footnote{font-size:11px;color:var(--ant4);margin-top:14px;line-height:1.55}
 .back-btn{background:none;border:none;cursor:pointer;font-family:"Figtree",sans-serif;font-size:12px;font-weight:600;color:var(--ant4);display:flex;align-items:center;gap:5px;padding:0;margin-bottom:20px;transition:color .2s}
 .back-btn:hover{color:var(--ant)}
@@ -169,25 +179,20 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
     </div>
     <div class="mini-label">What retail programs do you have (or want to consider)?</div>
     <div class="prog-grid">
-      <div class="prog-opt sel" data-prog="instore" onclick="togProg(this)">
-        <div class="prog-chk">&#10003;</div>
-        <div><div class="prog-name">&#128722; In-Store Sales Lift</div>
-        <div class="prog-desc">EV drivers who enter your store during their charge session, spending more thanks to personalized offers.</div></div>
-      </div>
       <div class="prog-opt sel" data-prog="rmn" onclick="togProg(this)">
         <div class="prog-chk">&#10003;</div>
         <div><div class="prog-name">&#128250; Retail Media Network</div>
-        <div class="prog-desc">Net-new advertising inventory created by charger screens during dwell time.</div></div>
+        <div class="prog-desc">Ad revenue from charger screens plus higher in-store conversion and bigger baskets from ad-exposed drivers.</div></div>
       </div>
       <div class="prog-opt sel" data-prog="loyalty" onclick="togProg(this)">
         <div class="prog-chk">&#10003;</div>
         <div><div class="prog-name">&#11088; Loyalty Program</div>
-        <div class="prog-desc">Net-new loyalty signups acquired at the charger and their incremental lifetime value.</div></div>
+        <div class="prog-desc">Net-new loyalty signups at the charger plus incremental store visits from enrolled members.</div></div>
       </div>
       <div class="prog-opt sel" data-prog="membership" onclick="togProg(this)">
         <div class="prog-chk">&#10003;</div>
         <div><div class="prog-name">&#128179; Membership Program</div>
-        <div class="prog-desc">New paid memberships and tier upgrades driven by the charger engagement moment.</div></div>
+        <div class="prog-desc">New paid memberships and upgrades, plus incremental store visits from members throughout the year.</div></div>
       </div>
     </div>
     <button class="cta-btn" id="start-btn" onclick="startCalc()" disabled>Calculate my incremental value &rarr;</button>
@@ -197,28 +202,34 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 <div id="step-calc">
   <div id="inputs-col">
     <button class="back-btn" onclick="goBack()">&#8592; Edit programs</button>
+
+    <!-- Core Inputs -->
     <div class="card">
       <div class="sec-head"><div class="sec-accent" style="background:var(--yel)"></div><div class="sec-label">Core Inputs</div></div>
       <div id="core-inputs"></div>
     </div>
-    <div class="card" id="card-instore" style="display:none">
-      <div class="sec-head"><div class="sec-accent" style="background:var(--ant)"></div><div class="sec-label">In-Store Sales Lift</div></div>
-      <div id="instore-main"></div><div class="adv-sec" id="instore-adv"></div>
-    </div>
+
+    <!-- RMN -->
     <div class="card" id="card-rmn" style="display:none">
       <div class="sec-head"><div class="sec-accent" style="background:var(--yel)"></div><div class="sec-label">Retail Media (RMN)</div></div>
       <div id="rmn-main"></div><div class="adv-sec" id="rmn-adv"></div>
     </div>
+
+    <!-- Loyalty -->
     <div class="card" id="card-loyalty" style="display:none">
       <div class="sec-head"><div class="sec-accent" style="background:var(--arc)"></div><div class="sec-label">Loyalty Program</div></div>
       <div id="loyalty-main"></div><div class="adv-sec" id="loyalty-adv"></div>
     </div>
+
+    <!-- Membership -->
     <div class="card" id="card-membership" style="display:none">
       <div class="sec-head"><div class="sec-accent" style="background:var(--grn)"></div><div class="sec-label">Membership Program</div></div>
       <div id="membership-main"></div><div class="adv-sec" id="membership-adv"></div>
     </div>
+
     <button class="adv-toggle" id="adv-btn" onclick="togAdv()">+ Show advanced inputs</button>
   </div>
+
   <div id="out-panel">
     <div class="tot-hero">
       <div class="tot-eyebrow"><span>&#9889;</span> Total incremental value</div>
@@ -238,14 +249,27 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 
 <script>
 var DEF = {
-  grocery:     {sessionsPerDay:30,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,basketLiftPct:12,incrementalityRate:65,cpm:30,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:12,loyaltyLTV:220,repeatVisitFrequency:2.1,membershipSignupRate:3,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90},
-  bigbox:      {sessionsPerDay:30,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,basketLiftPct:15,incrementalityRate:60,cpm:60,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:8,loyaltyLTV:280,repeatVisitFrequency:1.3,membershipSignupRate:4,membershipValue:60,membershipUpgradeRate:3,membershipUpgradeValue:60},
-  convenience: {sessionsPerDay:40,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,basketLiftPct:20,incrementalityRate:70,cpm:22,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:15,loyaltyLTV:90,repeatVisitFrequency:2.8,membershipSignupRate:2,membershipValue:50,membershipUpgradeRate:1,membershipUpgradeValue:50}
+  grocery:     {sessionsPerDay:30,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,incrementalityRate:65,
+                rmnConvUplift:8,basketLiftPct:12,cpm:30,screensPerCharger:1,viewabilityRate:90,
+                loyaltySignupRate:12,loyaltyLTV:220,loyaltyVisitFreq:2.1,
+                membershipSignupRate:3,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90,membershipVisitFreq:1.8},
+  bigbox:      {sessionsPerDay:30,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,incrementalityRate:60,
+                rmnConvUplift:6,basketLiftPct:15,cpm:60,screensPerCharger:1,viewabilityRate:90,
+                loyaltySignupRate:8,loyaltyLTV:280,loyaltyVisitFreq:1.3,
+                membershipSignupRate:4,membershipValue:60,membershipUpgradeRate:3,membershipUpgradeValue:60,membershipVisitFreq:1.2},
+  convenience: {sessionsPerDay:40,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,incrementalityRate:70,
+                rmnConvUplift:10,basketLiftPct:20,cpm:22,screensPerCharger:1,viewabilityRate:90,
+                loyaltySignupRate:15,loyaltyLTV:90,loyaltyVisitFreq:2.8,
+                membershipSignupRate:2,membershipValue:50,membershipUpgradeRate:1,membershipUpgradeValue:50,membershipVisitFreq:2.2}
 };
-var BCOL = {instore:"#28282D",rmn:"#F8B918",loyalty:"#BFBFD7",membership:"#C0CEBC"};
-var BNAME = {instore:"In-Store",rmn:"Media",loyalty:"Loyalty",membership:"Member"};
-var ALL = ["instore","rmn","loyalty","membership"];
-var ST = {fmt:null, progs:new Set(["instore","rmn","loyalty","membership"]), inp:null, adv:false};
+
+// Direct value colours (solid), lift colours (lighter tint)
+var DCOL  = {rmn:"#F8B918", loyalty:"#BFBFD7", membership:"#C0CEBC"};
+var LCOL  = {rmn:"#FDE89A", loyalty:"#E2E2EE", membership:"#E2EBE0"};
+var BNAME = {rmn:"Media", loyalty:"Loyalty", membership:"Member"};
+var ALL   = ["rmn","loyalty","membership"];
+
+var ST = {fmt:null, progs:new Set(["rmn","loyalty","membership"]), inp:null, adv:false};
 
 function selFmt(btn) {
   document.querySelectorAll(".fmt-btn").forEach(function(b){b.classList.remove("sel");});
@@ -315,27 +339,36 @@ function mkSl(key, lbl, min, max, step, unit, tip, el) {
 function g(id){var e=document.getElementById(id);e.innerHTML="";return e;}
 
 function buildInputs() {
-  mkSl("sessionsPerDay","Sessions per day",10,200,5,"","Total EV charging sessions across all chargers per day.",g("core-inputs"));
-  mkSl("dwellMinutes","Average dwell time",10,60,1," min","Average minutes a driver spends at the charger.",document.getElementById("core-inputs"));
-  mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",document.getElementById("core-inputs"));
+  // Core — shared foundation + in-store params
+  var ci = g("core-inputs");
+  mkSl("sessionsPerDay","Sessions per day",10,200,5,"","Total EV charging sessions across all chargers per day.",ci);
+  mkSl("dwellMinutes","Average dwell time",10,60,1," min","Average minutes a driver spends at the charger.",ci);
+  mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",ci);
+  mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",ci);
+  mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for an in-store visitor.",ci);
+  mkSl("incrementalityRate","Incrementality rate",10,95,1,"%","% of in-store visits that are truly incremental — would not have happened without the charger.",ci);
 
-  mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",g("instore-main"));
-  mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for incremental in-store visitors.",document.getElementById("instore-main"));
-  mkSl("basketLiftPct","Basket lift from personalized ads",0,40,1,"%","Incremental basket size increase driven by charger advertising.",g("instore-adv"));
-  mkSl("incrementalityRate","Incrementality rate",10,95,1,"%","% of visits truly incremental to the charger touchpoint.",document.getElementById("instore-adv"));
+  // RMN — direct media + in-store lift inputs
+  var rm = g("rmn-main"), ra = g("rmn-adv");
+  mkSl("cpm","CPM",10,100,1,"$","Cost per thousand impressions for your RMN.",rm);
+  mkSl("rmnConvUplift","Conversion rate uplift from ads",0,30,1,"%","Additional % of drivers who enter the store because they saw an ad on the charger screen.",rm);
+  mkSl("basketLiftPct","Basket lift from personalized ads",0,40,1,"%","Incremental basket size increase driven by charger advertising.",rm);
+  mkSl("screensPerCharger","Screens per charger",1,3,1,"","Number of ad screens on each charging unit.",ra);
+  mkSl("viewabilityRate","Viewability rate",50,100,1,"%","% of ad slots resulting in a viewable impression.",ra);
 
-  mkSl("cpm","CPM",10,100,1,"$","Cost per thousand impressions for your RMN.",g("rmn-main"));
-  mkSl("screensPerCharger","Screens per charger",1,3,1,"","Number of ad screens on each charging unit.",g("rmn-adv"));
-  mkSl("viewabilityRate","Viewability rate",50,100,1,"%","% of ad slots resulting in a viewable impression.",document.getElementById("rmn-adv"));
+  // Loyalty — LTV + visit frequency
+  var lm = g("loyalty-main"), la = g("loyalty-adv");
+  mkSl("loyaltySignupRate","New loyalty signup rate",1,50,1,"%","% of sessions resulting in a net-new loyalty enrollment.",lm);
+  mkSl("loyaltyLTV","Lifetime value per new member",50,1000,10,"$","Incremental LTV of a loyalty member acquired at the charger.",lm);
+  mkSl("loyaltyVisitFreq","Additional visits per member per year",0,10,0.1," x","How many more store visits per year a loyalty member makes vs. a non-member.",la);
 
-  mkSl("loyaltySignupRate","New loyalty signup rate",1,50,1,"%","% of sessions resulting in a net-new loyalty enrollment.",g("loyalty-main"));
-  mkSl("loyaltyLTV","Lifetime value per new member",50,1000,10,"$","Incremental LTV of a loyalty member acquired at the charger.",document.getElementById("loyalty-main"));
-  mkSl("repeatVisitFrequency","Repeat visit frequency",1,10,0.1," x","How many more times per year a loyalty member visits.",g("loyalty-adv"));
-
-  mkSl("membershipSignupRate","New membership signup rate",0,25,0.5,"%","% of sessions resulting in a net-new paid membership.",g("membership-main"));
-  mkSl("membershipValue","Annual membership value",10,500,5,"$","Annual fee or incremental value per new membership.",document.getElementById("membership-main"));
-  mkSl("membershipUpgradeRate","Membership upgrade rate",0,15,0.5,"%","% of sessions leading to a tier upgrade.",g("membership-adv"));
-  mkSl("membershipUpgradeValue","Upgrade incremental value",10,300,5,"$","Incremental annual value of a tier upgrade.",document.getElementById("membership-adv"));
+  // Membership — fees + visit frequency
+  var mm = g("membership-main"), ma = g("membership-adv");
+  mkSl("membershipSignupRate","New membership signup rate",0,25,0.5,"%","% of sessions resulting in a net-new paid membership.",mm);
+  mkSl("membershipValue","Annual membership value",10,500,5,"$","Annual fee or incremental value per new membership.",mm);
+  mkSl("membershipUpgradeRate","Membership upgrade rate",0,15,0.5,"%","% of sessions leading to a tier upgrade.",mm);
+  mkSl("membershipUpgradeValue","Upgrade incremental value",10,300,5,"$","Incremental annual value of a tier upgrade.",mm);
+  mkSl("membershipVisitFreq","Additional visits per member per year",0,10,0.1," x","How many more store visits per year a member makes vs. a non-member.",ma);
 }
 
 function updSl(key, unit, min, max, raw) {
@@ -353,15 +386,57 @@ function togAdv() {
   document.getElementById("adv-btn").textContent = ST.adv ? "- Hide advanced inputs" : "+ Show advanced inputs";
 }
 
+// ── Calculation engine ──────────────────────────────────────────────────────
 function calc() {
-  var s = ST.inp, a = s.sessionsPerDay*365;
-  var vis = a*(s.conversionRate/100)*(s.incrementalityRate/100);
-  var bas = vis*s.basketSize, adl = vis*s.basketSize*(s.basketLiftPct/100);
-  var ips = (s.screensPerCharger)*(s.viewabilityRate/100), ti = a*s.chargers*ips;
-  var ls = a*(s.loyaltySignupRate/100), lv = ls*s.loyaltyLTV;
-  var ms = a*(s.membershipSignupRate/100), mv = ms*s.membershipValue;
-  var us = a*(s.membershipUpgradeRate/100), uv = us*s.membershipUpgradeValue;
-  return {a:a,vis:vis,bas:bas,adl:adl,ins:bas+adl,ips:ips,ti:ti,rmn:(ti/1000)*s.cpm,ls:ls,lv:lv,ms:ms,mv:mv,us:us,uv:uv,mt:mv+uv};
+  var s = ST.inp;
+  var ann = s.sessionsPerDay * 365;               // annual sessions
+  var incr = s.incrementalityRate / 100;
+
+  // Base incremental visits (without any program uplift)
+  var baseVisits = ann * (s.conversionRate/100) * incr;
+
+  // ── RMN ──
+  // Direct: media revenue from impressions
+  var ips    = s.screensPerCharger * (s.viewabilityRate/100);
+  var ti     = ann * s.chargers * ips;
+  var rmnDirect = (ti/1000) * s.cpm;
+  // In-store lift: conversion uplift drives extra visits with bigger baskets
+  var rmnExtraVisits  = ann * (s.rmnConvUplift/100) * incr;
+  var rmnLiftedBasket = s.basketSize * (1 + s.basketLiftPct/100);
+  // All ad-exposed visitors also get basket lift (base + extra)
+  var rmnStoreLift = (baseVisits + rmnExtraVisits) * s.basketSize * (s.basketLiftPct/100)
+                   + rmnExtraVisits * s.basketSize;
+
+  // ── Loyalty ──
+  // Direct: LTV of net-new signups
+  var loySignups = ann * (s.loyaltySignupRate/100);
+  var loyDirect  = loySignups * s.loyaltyLTV;
+  // In-store lift: each signup makes additional visits × basket
+  var loyStoreLift = loySignups * s.loyaltyVisitFreq * s.basketSize;
+
+  // ── Membership ──
+  // Direct: signup fees + upgrade fees
+  var memSignups   = ann * (s.membershipSignupRate/100);
+  var memUpgrades  = ann * (s.membershipUpgradeRate/100);
+  var memDirect    = memSignups * s.membershipValue + memUpgrades * s.membershipUpgradeValue;
+  // In-store lift: members visit more often
+  var memStoreLift = (memSignups + memUpgrades) * s.membershipVisitFreq * s.basketSize;
+
+  return {
+    ann: ann,
+    baseVisits: baseVisits,
+    // RMN
+    rmnDirect: rmnDirect, rmnStoreLift: rmnStoreLift,
+    ti: ti, ips: ips,
+    rmnExtraVisits: rmnExtraVisits,
+    // Loyalty
+    loyDirect: loyDirect, loyStoreLift: loyStoreLift,
+    loySignups: loySignups,
+    // Membership
+    memDirect: memDirect, memStoreLift: memStoreLift,
+    memSignups: memSignups, memUpgrades: memUpgrades,
+    memFees: memSignups*s.membershipValue, memUpgFees: memUpgrades*s.membershipUpgradeValue
+  };
 }
 
 function fmt(n) {
@@ -371,47 +446,131 @@ function fmt(n) {
   return "$"+n.toLocaleString();
 }
 function fmtM(n){return (n/1000000).toFixed(1)+"M";}
+function fmtN(n){return Math.round(n).toLocaleString();}
 
+// ── Render ──────────────────────────────────────────────────────────────────
 function render() {
   var c = calc(), s = ST.inp, p = ST.progs;
-  var v = {instore:p.has("instore")?c.ins:0, rmn:p.has("rmn")?c.rmn:0, loyalty:p.has("loyalty")?c.lv:0, membership:p.has("membership")?c.mt:0};
-  var tot = v.instore+v.rmn+v.loyalty+v.membership;
-  document.getElementById("tot-val").textContent = fmt(tot);
-  document.getElementById("tot-sub").textContent = "per year \u00b7 "+c.a.toLocaleString()+" sessions";
-  document.getElementById("per-sess-val").textContent = fmt(tot/c.a);
 
-  var ap = ALL.filter(function(k){return p.has(k);});
-  var mx = Math.max.apply(null,ap.map(function(k){return v[k];}).concat([1]));
-  var bc = document.getElementById("bar-chart"), bl = document.getElementById("bar-lbls");
+  var direct = {
+    rmn:        p.has("rmn")        ? c.rmnDirect  : 0,
+    loyalty:    p.has("loyalty")    ? c.loyDirect  : 0,
+    membership: p.has("membership") ? c.memDirect  : 0
+  };
+  var lift = {
+    rmn:        p.has("rmn")        ? c.rmnStoreLift  : 0,
+    loyalty:    p.has("loyalty")    ? c.loyStoreLift  : 0,
+    membership: p.has("membership") ? c.memStoreLift  : 0
+  };
+
+  var tot = 0;
+  ALL.forEach(function(k){ tot += direct[k] + lift[k]; });
+
+  document.getElementById("tot-val").textContent = fmt(tot);
+  document.getElementById("tot-sub").textContent = "per year \u00b7 "+c.ann.toLocaleString()+" sessions";
+  document.getElementById("per-sess-val").textContent = fmt(tot/c.ann);
+
+  // ── Stacked bar chart ──
+  var ap  = ALL.filter(function(k){return p.has(k);});
+  var mx  = Math.max.apply(null, ap.map(function(k){return direct[k]+lift[k];}).concat([1]));
+  var bc  = document.getElementById("bar-chart");
+  var bl  = document.getElementById("bar-lbls");
   bc.innerHTML = bl.innerHTML = "";
+
   ap.forEach(function(k){
-    var h = Math.max(4,(v[k]/mx)*68);
+    var total  = direct[k] + lift[k];
+    var hTotal = Math.max(4, (total/mx)*72);
+    var hLift  = lift[k] > 0 ? Math.max(2, (lift[k]/total)*hTotal) : 0;
+    var hDirect= hTotal - hLift;
+
     var col = document.createElement("div"); col.className="bar-col";
-    col.innerHTML = "<div class='bar-rect' style='height:"+h+"px;background:"+BCOL[k]+"'></div>";
+    col.innerHTML =
+      "<div class='bar-stack' style='height:"+hTotal+"px'>" +
+        "<div class='bar-seg-lift'  style='height:"+hLift+"px;background:"+LCOL[k]+"'></div>" +
+        "<div class='bar-seg-direct' style='height:"+hDirect+"px;background:"+DCOL[k]+"'></div>" +
+      "</div>";
     bc.appendChild(col);
+
     var lb = document.createElement("div"); lb.className="bar-lbl-col";
-    lb.innerHTML = "<div class='bar-lbl-name'>"+BNAME[k]+"</div><div class='bar-lbl-val'>"+fmt(v[k])+"</div>";
+    lb.innerHTML = "<div class='bar-lbl-name'>"+BNAME[k]+"</div><div class='bar-lbl-val'>"+fmt(total)+"</div>";
     bl.appendChild(lb);
   });
 
+  // ── Value cards ──
   var vc = document.getElementById("val-cards"); vc.innerHTML="";
-  if (p.has("instore"))    mkCard(vc,"In-Store Sales Lift","&#128722;",s.conversionRate+"% conv &middot; "+s.incrementalityRate+"% incr.",c.ins,"#28282D",[["Incremental visits/yr",Math.round(c.vis).toLocaleString()],["Base sales",fmt(c.bas)],["Ad basket lift (+"+s.basketLiftPct+"%)",fmt(c.adl)],["Total in-store lift",fmt(c.ins)]]);
-  if (p.has("rmn"))        mkCard(vc,"Retail Media (RMN)","&#128250;",fmtM(c.ti)+" impressions &middot; $"+s.cpm+" CPM",c.rmn,"#F7AF14",[["Impressions/session",Math.round(c.ips)],["Annual impressions",fmtM(c.ti)],["CPM","$"+s.cpm],["Total RMN value",fmt(c.rmn)]]);
-  if (p.has("loyalty"))    mkCard(vc,"Loyalty Program","&#11088;",s.loyaltySignupRate+"% signup &middot; $"+s.loyaltyLTV+" LTV",c.lv,"#BFBFD7",[["Net-new signups/yr",Math.round(c.ls).toLocaleString()],["LTV per member","$"+s.loyaltyLTV],["Total loyalty value",fmt(c.lv)]]);
-  if (p.has("membership")) mkCard(vc,"Membership Program","&#128179;",s.membershipSignupRate+"% signup &middot; "+s.membershipUpgradeRate+"% upgrades",c.mt,"#C0CEBC",[["New memberships/yr",Math.round(c.ms).toLocaleString()],["Value per member","$"+s.membershipValue],["New membership value",fmt(c.mv)],["Upgrade conversions/yr",Math.round(c.us).toLocaleString()],["Upgrade value",fmt(c.uv)],["Total membership value",fmt(c.mt)]]);
+
+  if (p.has("rmn")) {
+    mkCard(vc, "Retail Media (RMN)", "&#128250;",
+      fmtN(c.ti)+" impressions \u00b7 $"+s.cpm+" CPM",
+      c.rmnDirect, c.rmnStoreLift, "#F7AF14",
+      [["Impressions/session", Math.round(c.ips)],
+       ["Annual total impressions", fmtM(c.ti)],
+       ["CPM", "$"+s.cpm],
+       ["RMN media revenue", fmt(c.rmnDirect)],
+       null,
+       ["Base visits into store", fmtN(c.baseVisits)],
+       ["Extra visits from ad conversion uplift (+"+s.rmnConvUplift+"%)", fmtN(c.rmnExtraVisits)],
+       ["Basket lift (+"+s.basketLiftPct+"%)", fmt(c.rmnStoreLift)]
+      ]);
+  }
+  if (p.has("loyalty")) {
+    mkCard(vc, "Loyalty Program", "&#11088;",
+      s.loyaltySignupRate+"% signup \u00b7 $"+s.loyaltyLTV+" LTV",
+      c.loyDirect, c.loyStoreLift, "#BFBFD7",
+      [["Net-new signups/yr", fmtN(c.loySignups)],
+       ["LTV per member", "$"+s.loyaltyLTV],
+       ["Loyalty LTV value", fmt(c.loyDirect)],
+       null,
+       ["Additional visits per member/yr", s.loyaltyVisitFreq+"x"],
+       ["Avg basket size", "$"+s.basketSize],
+       ["Incremental store sales from visits", fmt(c.loyStoreLift)]
+      ]);
+  }
+  if (p.has("membership")) {
+    mkCard(vc, "Membership Program", "&#128179;",
+      s.membershipSignupRate+"% signup \u00b7 "+s.membershipUpgradeRate+"% upgrades",
+      c.memDirect, c.memStoreLift, "#C0CEBC",
+      [["New memberships/yr", fmtN(c.memSignups)],
+       ["Signup fee value", fmt(c.memFees)],
+       ["Upgrade conversions/yr", fmtN(c.memUpgrades)],
+       ["Upgrade fee value", fmt(c.memUpgFees)],
+       ["Total membership fees", fmt(c.memDirect)],
+       null,
+       ["Additional visits per member/yr", s.membershipVisitFreq+"x"],
+       ["Avg basket size", "$"+s.basketSize],
+       ["Incremental store sales from visits", fmt(c.memStoreLift)]
+      ]);
+  }
 }
 
-function mkCard(con, title, icon, sub, val, col, rows) {
+function mkCard(con, title, icon, sub, directVal, liftVal, col, rows) {
+  var total = directVal + liftVal;
   var d = document.createElement("div"); d.className="val-card";
   var uid = "c"+Math.random().toString(36).slice(2,7);
-  var rh = rows.map(function(r){return "<div class='bd-row'><span class='bd-row-lbl'>"+r[0]+"</span><span class='bd-row-val'>"+r[1]+"</span></div>";}).join("");
+
+  var rh = rows.map(function(r){
+    if (r === null) return "<div class='bd-divider'></div>";
+    return "<div class='bd-row'><span class='bd-row-lbl'>"+r[0]+"</span><span class='bd-row-val'>"+r[1]+"</span></div>";
+  }).join("");
+
   d.innerHTML =
-    "<div class='vc-body'><div class='vc-icon-row'>"+
-    "<div class='vc-icon' style='background:"+col+"33'>"+icon+"</div>"+
-    "<span class='vc-title'>"+title+"</span></div>"+
-    "<div class='vc-sub'>"+sub+"</div>"+
-    "<div class='vc-amt'>"+fmt(val)+"<span class='vc-unit'>/ year</span></div></div>"+
-    "<div class='bd-toggle' onclick=\"togBD('"+uid+"')\">How it&#39;s calculated <span class='bd-arrow' id='a-"+uid+"'>&#9660;</span></div>"+
+    "<div class='vc-body'>" +
+      "<div class='vc-icon-row'>" +
+        "<div class='vc-icon' style='background:"+col+"33'>"+icon+"</div>" +
+        "<span class='vc-title'>"+title+"</span>" +
+      "</div>" +
+      "<div class='vc-sub'>"+sub+"</div>" +
+      "<div class='vc-amounts'>" +
+        "<div class='vc-amt-direct'>"+fmt(total)+"<span class='vc-unit'>/ year</span></div>" +
+        (liftVal > 0 ?
+          "<div class='vc-lift-pill'>" +
+            "<span class='vc-lift-icon'>&#128722;</span>" +
+            "<span class='vc-lift-label'>incl.</span>" +
+            "<span class='vc-lift-val'>"+fmt(liftVal)+" incremental store sales</span>" +
+          "</div>" : "") +
+      "</div>" +
+    "</div>" +
+    "<div class='bd-toggle' onclick=\"togBD('"+uid+"')\">How it&#39;s calculated <span class='bd-arrow' id='a-"+uid+"'>&#9660;</span></div>" +
     "<div class='bd-body' id='b-"+uid+"'>"+rh+"</div>";
   con.appendChild(d);
 }
