@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EV Charging Retail Value Calculator — Electric Era</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ant:#28282D;--ant8:#3E3E42;--ant7:#535357;--ant6:#69696C;--ant5:#7E7E81;
+  --ant4:#939396;--ant3:#A9A9AB;--ant2:#BEBEC0;--ant1:#D4D4D5;--ant0:#E9E9EA;
+  --yel:#F8B918;--yel6:#F7AF14;--yel1:#FEF1D1;
+  --arc:#BFBFD7;--grn:#C0CEBC;--wht:#FFFFFF;
+}
+body{font-family:"Figtree",sans-serif;background:var(--ant0);color:var(--ant);min-height:100vh}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--ant2);border-radius:3px}
+
+header{background:var(--ant);border-bottom:2px solid var(--yel);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-symbol{width:34px;height:20px;display:flex;align-items:center;gap:3px}
+.logo-c{width:14px;height:14px;border:2.5px solid var(--wht);border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.logo-c::before{content:"";width:3px;height:3px;background:var(--wht);border-radius:50%}
+.logo-c.right{transform:scaleX(-1)}
+.logo-text{font-size:15px;font-weight:800;color:var(--wht);letter-spacing:-0.3px}
+.header-tag{font-size:11px;font-weight:700;color:var(--ant3);text-transform:uppercase;letter-spacing:1.2px;display:flex;align-items:center;gap:5px}
+.bolt{color:var(--yel)}
+
+.hero{background:var(--ant);padding:36px 32px 40px;border-bottom:1px solid var(--ant8)}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-eyebrow{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--yel);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.hero h1{font-size:clamp(26px,3.8vw,42px);font-weight:800;color:var(--wht);line-height:1.1;letter-spacing:-1.5px;margin-bottom:12px}
+.hero h1 span{color:var(--yel)}
+.hero p{font-size:14px;color:var(--ant3);max-width:520px;line-height:1.65}
+
+.step-indicator{max-width:960px;margin:22px auto 0;padding:0 24px;display:flex;align-items:center;gap:8px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--ant6);transition:all .3s}
+.step-dot.active{background:var(--yel);width:24px;border-radius:4px}
+.step-dot.done{background:var(--ant3)}
+
+#step-onboard{max-width:620px;margin:30px auto 0;padding:0 24px 80px}
+.onboard-card{background:var(--wht);border-radius:16px;padding:36px 40px;border:1px solid var(--ant0)}
+.onboard-card h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.onboard-card>p{font-size:13px;color:var(--ant5);margin-bottom:28px}
+.mini-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--ant6);margin-bottom:10px}
+.format-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px}
+.fmt-btn{padding:12px 8px;border-radius:8px;border:1.5px solid var(--ant1);background:var(--wht);color:var(--ant6);font-family:"Figtree",sans-serif;font-weight:600;font-size:12px;cursor:pointer;text-align:center;transition:all .15s;line-height:1.3}
+.fmt-btn:hover{border-color:var(--ant3);color:var(--ant)}
+.fmt-btn.sel{border-color:var(--ant);background:var(--ant);color:var(--wht)}
+.prog-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.prog-opt{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border-radius:10px;border:1.5px solid var(--ant1);cursor:pointer;transition:all .15s;user-select:none}
+.prog-opt:hover{border-color:var(--ant3);background:var(--ant0)}
+.prog-opt.sel{border-color:var(--ant);background:var(--wht)}
+.prog-chk{width:20px;height:20px;border-radius:5px;border:2px solid var(--ant2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;margin-top:1px;font-size:11px;color:var(--wht)}
+.prog-opt.sel .prog-chk{background:var(--ant);border-color:var(--ant)}
+.prog-name{font-weight:700;font-size:14px;margin-bottom:2px}
+.prog-desc{font-size:12px;color:var(--ant5);line-height:1.4}
+.cta-btn{width:100%;padding:16px;border-radius:10px;border:none;background:var(--ant);color:var(--wht);font-family:"Figtree",sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.cta-btn:hover{background:var(--ant8)}
+.cta-btn:disabled{opacity:.35;cursor:not-allowed}
+
+#step-calc{display:none;max-width:980px;margin:0 auto;padding:28px 24px 80px;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.card{background:var(--wht);border-radius:12px;padding:20px 22px;border:1px solid var(--ant0);margin-bottom:16px;transition:box-shadow .2s}
+.card:hover{box-shadow:0 3px 18px rgba(40,40,45,.08)}
+.sec-head{display:flex;align-items:center;gap:9px;margin-bottom:18px}
+.sec-accent{width:3px;height:18px;border-radius:2px;flex-shrink:0}
+.sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--ant6)}
+
+.sl-wrap{margin-bottom:18px}
+.sl-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+.sl-label{font-size:11px;font-weight:700;color:var(--ant7);text-transform:uppercase;letter-spacing:.8px;cursor:help;border-bottom:1px dashed var(--ant3);position:relative}
+.sl-val{font-size:13px;font-weight:700;color:var(--ant);background:var(--yel1);padding:2px 9px;border-radius:4px;min-width:48px;text-align:center}
+.sl-track{position:relative;height:20px;display:flex;align-items:center}
+.sl-bg{position:absolute;left:0;right:0;height:4px;background:var(--ant1);border-radius:2px}
+.sl-fill{position:absolute;left:0;height:4px;background:var(--yel);border-radius:2px;transition:width .08s}
+.sl-thumb{position:absolute;width:16px;height:16px;background:var(--ant);border:3px solid var(--yel);border-radius:50%;pointer-events:none;transition:left .08s}
+input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:20px;margin:0;-webkit-appearance:none;appearance:none}
+.tip{display:none;position:absolute;bottom:calc(100% + 5px);left:0;background:var(--ant);color:var(--wht);padding:7px 11px;border-radius:5px;font-size:11px;max-width:220px;line-height:1.45;z-index:50;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:normal;font-weight:400}
+.sl-label:hover .tip{display:block}
+
+.adv-toggle{width:100%;padding:11px;border-radius:8px;border:1px dashed var(--ant2);background:transparent;color:var(--ant5);font-family:"Figtree",sans-serif;font-weight:600;font-size:12px;cursor:pointer;transition:all .2s;margin-top:4px}
+.adv-toggle:hover{border-color:var(--ant);color:var(--ant)}
+.adv-sec{display:none}
+.adv-sec.open{display:block}
+
+#out-panel{position:sticky;top:72px}
+.tot-hero{background:var(--ant);border-radius:14px;padding:26px 28px;margin-bottom:16px;overflow:hidden;position:relative}
+.tot-hero::before{content:"";position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:var(--yel);opacity:.055;border-radius:50%}
+.tot-eyebrow{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;color:var(--yel);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:3px}
+.tot-val{font-size:clamp(34px,4.5vw,50px);font-weight:900;color:var(--wht);letter-spacing:-2px;line-height:1;margin-bottom:3px}
+.tot-sub{font-size:12px;color:var(--ant4);margin-bottom:18px}
+.bar-chart{display:flex;gap:6px;align-items:flex-end;height:72px;margin-bottom:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center}
+.bar-rect{width:100%;border-radius:3px 3px 0 0;transition:height .4s ease;min-height:4px}
+.bar-lbls{display:flex;gap:6px;margin-bottom:18px}
+.bar-lbl-col{flex:1;text-align:center}
+.bar-lbl-name{font-size:9px;font-weight:700;color:var(--ant4);text-transform:uppercase;letter-spacing:.4px;line-height:1.2}
+.bar-lbl-val{font-size:11px;font-weight:700;color:var(--ant2)}
+.per-sess{background:var(--ant8);border-radius:8px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center}
+.per-sess-lbl{font-size:12px;color:var(--ant3)}
+.per-sess-val{font-size:20px;font-weight:800;color:var(--yel)}
+
+.val-card{background:var(--wht);border-radius:12px;border:1px solid var(--ant0);overflow:hidden;margin-bottom:10px}
+.val-card:hover{box-shadow:0 3px 18px rgba(40,40,45,.08)}
+.vc-body{padding:18px 22px 14px}
+.vc-icon-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.vc-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.vc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ant5)}
+.vc-sub{font-size:11px;color:var(--ant4);line-height:1.4;margin-bottom:10px}
+.vc-amt{font-size:30px;font-weight:900;color:var(--ant);letter-spacing:-1px;line-height:1}
+.vc-unit{font-size:12px;font-weight:500;color:var(--ant4);margin-left:5px}
+.bd-toggle{border-top:1px solid var(--ant0);padding:8px 22px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:11px;font-weight:600;color:var(--ant5);text-transform:uppercase;letter-spacing:.8px;transition:background .15s}
+.bd-toggle:hover{background:var(--ant0)}
+.bd-arrow{transition:transform .2s;font-size:10px}
+.bd-arrow.open{transform:rotate(180deg)}
+.bd-body{display:none;background:var(--ant0);padding:12px 22px 14px}
+.bd-body.open{display:block}
+.bd-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.bd-row-lbl{color:var(--ant6)}
+.bd-row-val{font-weight:700;color:var(--ant)}
+.footnote{font-size:11px;color:var(--ant4);margin-top:14px;line-height:1.55}
+.back-btn{background:none;border:none;cursor:pointer;font-family:"Figtree",sans-serif;font-size:12px;font-weight:600;color:var(--ant4);display:flex;align-items:center;gap:5px;padding:0;margin-bottom:20px;transition:color .2s}
+.back-btn:hover{color:var(--ant)}
+@media(max-width:720px){#step-calc{grid-template-columns:1fr}#out-panel{position:static}.format-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="38" height="22" viewBox="0 0 38 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 11C8 7.13 11.13 4 15 4C16.8 4 18.4 4.7 19.6 5.8C18.4 6.9 17.6 8.4 17.6 10.1C17.6 11.8 18.4 13.3 19.6 14.4C18.4 15.5 16.8 16.2 15 16.2C11.13 16.2 8 13.07 8 11Z" fill="white"/>
+      <circle cx="15" cy="11" r="1.8" fill="#28282D"/>
+      <path d="M30 11C30 14.87 26.87 18 23 18C21.2 18 19.6 17.3 18.4 16.2C19.6 15.1 20.4 13.6 20.4 11.9C20.4 10.2 19.6 8.7 18.4 7.6C19.6 6.5 21.2 5.8 23 5.8C26.87 5.8 30 8.93 30 11Z" fill="white"/>
+      <circle cx="23" cy="11" r="1.8" fill="#28282D"/>
+    </svg>
+    <span class="logo-text">Electric Era</span>
+  </div>
+  <div class="header-tag"><span class="bolt">&#9889;</span> Retail Program Value Calculator</div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span>&#9889;</span> EV Charging &times; Retail Programs</div>
+    <h1>What is a charging session<br><span>really worth</span> to your store?</h1>
+    <p>An EV fast charge creates 20&ndash;40 minutes of captive engagement. Calculate the incremental value of extending your existing retail programs to that moment.</p>
+  </div>
+</div>
+
+<div class="step-indicator">
+  <div class="step-dot active" id="dot-1"></div>
+  <div class="step-dot" id="dot-2"></div>
+</div>
+
+<div id="step-onboard">
+  <div class="onboard-card">
+    <h2>Tell us about your store</h2>
+    <p>We will load the right benchmarks and only show what is relevant to your programs.</p>
+    <div class="mini-label">Retail format</div>
+    <div class="format-grid">
+      <button class="fmt-btn" data-format="grocery"     onclick="selFmt(this)">Grocery</button>
+      <button class="fmt-btn" data-format="bigbox"      onclick="selFmt(this)">Big Box / Warehouse</button>
+      <button class="fmt-btn" data-format="convenience" onclick="selFmt(this)">Gas / Convenience</button>
+    </div>
+    <div class="mini-label">What retail programs do you have (or want to consider)?</div>
+    <div class="prog-grid">
+      <div class="prog-opt sel" data-prog="instore" onclick="togProg(this)">
+        <div class="prog-chk">&#10003;</div>
+        <div><div class="prog-name">&#128722; In-Store Sales Lift</div>
+        <div class="prog-desc">EV drivers who enter your store during their charge session, spending more thanks to personalized offers.</div></div>
+      </div>
+      <div class="prog-opt sel" data-prog="rmn" onclick="togProg(this)">
+        <div class="prog-chk">&#10003;</div>
+        <div><div class="prog-name">&#128250; Retail Media Network</div>
+        <div class="prog-desc">Net-new advertising inventory created by charger screens during dwell time.</div></div>
+      </div>
+      <div class="prog-opt sel" data-prog="loyalty" onclick="togProg(this)">
+        <div class="prog-chk">&#10003;</div>
+        <div><div class="prog-name">&#11088; Loyalty Program</div>
+        <div class="prog-desc">Net-new loyalty signups acquired at the charger and their incremental lifetime value.</div></div>
+      </div>
+      <div class="prog-opt sel" data-prog="membership" onclick="togProg(this)">
+        <div class="prog-chk">&#10003;</div>
+        <div><div class="prog-name">&#128179; Membership Program</div>
+        <div class="prog-desc">New paid memberships and tier upgrades driven by the charger engagement moment.</div></div>
+      </div>
+    </div>
+    <button class="cta-btn" id="start-btn" onclick="startCalc()" disabled>Calculate my incremental value &rarr;</button>
+  </div>
+</div>
+
+<div id="step-calc">
+  <div id="inputs-col">
+    <button class="back-btn" onclick="goBack()">&#8592; Edit programs</button>
+    <div class="card">
+      <div class="sec-head"><div class="sec-accent" style="background:var(--yel)"></div><div class="sec-label">Core Inputs</div></div>
+      <div id="core-inputs"></div>
+    </div>
+    <div class="card" id="card-instore" style="display:none">
+      <div class="sec-head"><div class="sec-accent" style="background:var(--ant)"></div><div class="sec-label">In-Store Sales Lift</div></div>
+      <div id="instore-main"></div><div class="adv-sec" id="instore-adv"></div>
+    </div>
+    <div class="card" id="card-rmn" style="display:none">
+      <div class="sec-head"><div class="sec-accent" style="background:var(--yel)"></div><div class="sec-label">Retail Media (RMN)</div></div>
+      <div id="rmn-main"></div><div class="adv-sec" id="rmn-adv"></div>
+    </div>
+    <div class="card" id="card-loyalty" style="display:none">
+      <div class="sec-head"><div class="sec-accent" style="background:var(--arc)"></div><div class="sec-label">Loyalty Program</div></div>
+      <div id="loyalty-main"></div><div class="adv-sec" id="loyalty-adv"></div>
+    </div>
+    <div class="card" id="card-membership" style="display:none">
+      <div class="sec-head"><div class="sec-accent" style="background:var(--grn)"></div><div class="sec-label">Membership Program</div></div>
+      <div id="membership-main"></div><div class="adv-sec" id="membership-adv"></div>
+    </div>
+    <button class="adv-toggle" id="adv-btn" onclick="togAdv()">+ Show advanced inputs</button>
+  </div>
+  <div id="out-panel">
+    <div class="tot-hero">
+      <div class="tot-eyebrow"><span>&#9889;</span> Total incremental value</div>
+      <div class="tot-val" id="tot-val">$0</div>
+      <div class="tot-sub" id="tot-sub">per year</div>
+      <div class="bar-chart" id="bar-chart"></div>
+      <div class="bar-lbls" id="bar-lbls"></div>
+      <div class="per-sess">
+        <span class="per-sess-lbl">Incremental value per session</span>
+        <span class="per-sess-val" id="per-sess-val">$0</span>
+      </div>
+    </div>
+    <div id="val-cards"></div>
+    <p class="footnote">All values represent incremental program value attributable to the EV charging touchpoint. Default benchmarks are based on Electric Era customer data and industry research. Adjust inputs to match your store profile.</p>
+  </div>
+</div>
+
+<script>
+var DEF = {
+  grocery:     {sessionsPerDay:80,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,basketLiftPct:12,incrementalityRate:65,cpm:28,screensPerCharger:1,viewabilityRate:72,loyaltySignupRate:18,loyaltyLTV:320,repeatVisitFrequency:2.4,membershipSignupRate:4,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90},
+  bigbox:      {sessionsPerDay:60,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,basketLiftPct:15,incrementalityRate:60,cpm:32,screensPerCharger:1,viewabilityRate:75,loyaltySignupRate:12,loyaltyLTV:280,repeatVisitFrequency:1.8,membershipSignupRate:8,membershipValue:60,membershipUpgradeRate:5,membershipUpgradeValue:60},
+  convenience: {sessionsPerDay:120,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,basketLiftPct:20,incrementalityRate:70,cpm:22,screensPerCharger:1,viewabilityRate:68,loyaltySignupRate:22,loyaltyLTV:140,repeatVisitFrequency:3.2,membershipSignupRate:3,membershipValue:60,membershipUpgradeRate:1,membershipUpgradeValue:40}
+};
+var BCOL = {instore:"#28282D",rmn:"#F8B918",loyalty:"#BFBFD7",membership:"#C0CEBC"};
+var BNAME = {instore:"In-Store",rmn:"Media",loyalty:"Loyalty",membership:"Member"};
+var ALL = ["instore","rmn","loyalty","membership"];
+var ST = {fmt:null, progs:new Set(["instore","rmn","loyalty","membership"]), inp:null, adv:false};
+
+function selFmt(btn) {
+  document.querySelectorAll(".fmt-btn").forEach(function(b){b.classList.remove("sel");});
+  btn.classList.add("sel");
+  ST.fmt = btn.dataset.format;
+  chkStart();
+}
+
+function togProg(el) {
+  var p = el.dataset.prog;
+  if (ST.progs.has(p)) {
+    if (ST.progs.size === 1) return;
+    ST.progs.delete(p);
+    el.classList.remove("sel");
+  } else {
+    ST.progs.add(p);
+    el.classList.add("sel");
+  }
+  chkStart();
+}
+
+function chkStart() {
+  document.getElementById("start-btn").disabled = !ST.fmt || ST.progs.size === 0;
+}
+
+function startCalc() {
+  ST.inp = Object.assign({}, DEF[ST.fmt]);
+  buildInputs();
+  showCards();
+  render();
+  document.getElementById("step-onboard").style.display = "none";
+  document.getElementById("step-calc").style.display = "grid";
+  document.getElementById("dot-1").classList.replace("active","done");
+  document.getElementById("dot-2").classList.add("active");
+}
+
+function goBack() {
+  document.getElementById("step-onboard").style.display = "block";
+  document.getElementById("step-calc").style.display = "none";
+  document.getElementById("dot-1").classList.replace("done","active");
+  document.getElementById("dot-2").classList.remove("active");
+}
+
+function showCards() {
+  ALL.forEach(function(p){
+    var c = document.getElementById("card-"+p);
+    if (c) c.style.display = ST.progs.has(p) ? "block" : "none";
+  });
+}
+
+function mkSl(key, lbl, min, max, step, unit, tip, el) {
+  var v = ST.inp[key], pct = ((v-min)/(max-min))*100;
+  var dv = unit==="$" ? "$"+v : v+unit;
+  var d = document.createElement("div");
+  d.className = "sl-wrap";
+  d.innerHTML =
+    "<div class='sl-header'><span class='sl-label'>"+lbl+"<span class='tip'>"+tip+"</span></span>"+
+    "<span class='sl-val' id='sv-"+key+"'>"+dv+"</span></div>"+
+    "<div class='sl-track'><div class='sl-bg'></div>"+
+    "<div class='sl-fill' id='sf-"+key+"' style='width:"+pct+"%'></div>"+
+    "<input type='range' min='"+min+"' max='"+max+"' step='"+step+"' value='"+v+"' "+
+    "oninput=\"updSl('"+key+"','"+unit+"',"+min+","+max+",this.value)\"/>"+
+    "<div class='sl-thumb' id='st-"+key+"' style='left:calc("+pct+"% - 8px)'></div></div>";
+  el.appendChild(d);
+}
+
+function g(id){var e=document.getElementById(id);e.innerHTML="";return e;}
+
+function buildInputs() {
+  mkSl("sessionsPerDay","Sessions per day",10,300,5,"","Total EV charging sessions across all chargers per day.",g("core-inputs"));
+  mkSl("dwellMinutes","Average dwell time",10,60,1," min","Average minutes a driver spends at the charger.",document.getElementById("core-inputs"));
+  mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",document.getElementById("core-inputs"));
+
+  mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",g("instore-main"));
+  mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for incremental in-store visitors.",document.getElementById("instore-main"));
+  mkSl("basketLiftPct","Basket lift from personalized ads",0,40,1,"%","Incremental basket size increase driven by charger advertising.",g("instore-adv"));
+  mkSl("incrementalityRate","Incrementality rate",20,95,1,"%","% of visits truly incremental to the charger touchpoint.",document.getElementById("instore-adv"));
+
+  mkSl("cpm","CPM",5,80,1,"$","Cost per thousand impressions for your RMN.",g("rmn-main"));
+  mkSl("screensPerCharger","Screens per charger",1,3,1,"","Number of ad screens on each charging unit.",g("rmn-adv"));
+  mkSl("viewabilityRate","Viewability rate",30,95,1,"%","% of ad slots resulting in a viewable impression.",document.getElementById("rmn-adv"));
+
+  mkSl("loyaltySignupRate","New loyalty signup rate",1,50,1,"%","% of sessions resulting in a net-new loyalty enrollment.",g("loyalty-main"));
+  mkSl("loyaltyLTV","Lifetime value per new member",50,1000,10,"$","Incremental LTV of a loyalty member acquired at the charger.",document.getElementById("loyalty-main"));
+  mkSl("repeatVisitFrequency","Repeat visit frequency",1,10,0.1," x","How many more times per year a loyalty member visits.",g("loyalty-adv"));
+
+  mkSl("membershipSignupRate","New membership signup rate",0,25,0.5,"%","% of sessions resulting in a net-new paid membership.",g("membership-main"));
+  mkSl("membershipValue","Annual membership value",10,500,5,"$","Annual fee or incremental value per new membership.",document.getElementById("membership-main"));
+  mkSl("membershipUpgradeRate","Membership upgrade rate",0,15,0.5,"%","% of sessions leading to a tier upgrade.",g("membership-adv"));
+  mkSl("membershipUpgradeValue","Upgrade incremental value",10,300,5,"$","Incremental annual value of a tier upgrade.",document.getElementById("membership-adv"));
+}
+
+function updSl(key, unit, min, max, raw) {
+  var v = parseFloat(raw), pct = ((v-min)/(max-min))*100;
+  ST.inp[key] = v;
+  document.getElementById("sf-"+key).style.width = pct+"%";
+  document.getElementById("st-"+key).style.left = "calc("+pct+"% - 8px)";
+  document.getElementById("sv-"+key).textContent = unit==="$" ? "$"+v : v+unit;
+  render();
+}
+
+function togAdv() {
+  ST.adv = !ST.adv;
+  document.querySelectorAll(".adv-sec").forEach(function(e){e.classList.toggle("open",ST.adv);});
+  document.getElementById("adv-btn").textContent = ST.adv ? "- Hide advanced inputs" : "+ Show advanced inputs";
+}
+
+function calc() {
+  var s = ST.inp, a = s.sessionsPerDay*365;
+  var vis = a*(s.conversionRate/100)*(s.incrementalityRate/100);
+  var bas = vis*s.basketSize, adl = vis*s.basketSize*(s.basketLiftPct/100);
+  var ips = (s.dwellMinutes/0.5)*(s.viewabilityRate/100), ti = a*s.chargers*ips;
+  var ls = a*(s.loyaltySignupRate/100), lv = ls*s.loyaltyLTV;
+  var ms = a*(s.membershipSignupRate/100), mv = ms*s.membershipValue;
+  var us = a*(s.membershipUpgradeRate/100), uv = us*s.membershipUpgradeValue;
+  return {a:a,vis:vis,bas:bas,adl:adl,ins:bas+adl,ips:ips,ti:ti,rmn:(ti/1000)*s.cpm,ls:ls,lv:lv,ms:ms,mv:mv,us:us,uv:uv,mt:mv+uv};
+}
+
+function fmt(n) {
+  n = Math.round(n);
+  if (n>=1000000) return "$"+(n/1000000).toFixed(2)+"M";
+  if (n>=1000)    return "$"+(n/1000).toFixed(1)+"K";
+  return "$"+n.toLocaleString();
+}
+function fmtM(n){return (n/1000000).toFixed(1)+"M";}
+
+function render() {
+  var c = calc(), s = ST.inp, p = ST.progs;
+  var v = {instore:p.has("instore")?c.ins:0, rmn:p.has("rmn")?c.rmn:0, loyalty:p.has("loyalty")?c.lv:0, membership:p.has("membership")?c.mt:0};
+  var tot = v.instore+v.rmn+v.loyalty+v.membership;
+  document.getElementById("tot-val").textContent = fmt(tot);
+  document.getElementById("tot-sub").textContent = "per year \u00b7 "+c.a.toLocaleString()+" sessions";
+  document.getElementById("per-sess-val").textContent = fmt(tot/c.a);
+
+  var ap = ALL.filter(function(k){return p.has(k);});
+  var mx = Math.max.apply(null,ap.map(function(k){return v[k];}).concat([1]));
+  var bc = document.getElementById("bar-chart"), bl = document.getElementById("bar-lbls");
+  bc.innerHTML = bl.innerHTML = "";
+  ap.forEach(function(k){
+    var h = Math.max(4,(v[k]/mx)*68);
+    var col = document.createElement("div"); col.className="bar-col";
+    col.innerHTML = "<div class='bar-rect' style='height:"+h+"px;background:"+BCOL[k]+"'></div>";
+    bc.appendChild(col);
+    var lb = document.createElement("div"); lb.className="bar-lbl-col";
+    lb.innerHTML = "<div class='bar-lbl-name'>"+BNAME[k]+"</div><div class='bar-lbl-val'>"+fmt(v[k])+"</div>";
+    bl.appendChild(lb);
+  });
+
+  var vc = document.getElementById("val-cards"); vc.innerHTML="";
+  if (p.has("instore"))    mkCard(vc,"In-Store Sales Lift","&#128722;",s.conversionRate+"% conv &middot; "+s.incrementalityRate+"% incr.",c.ins,"#28282D",[["Incremental visits/yr",Math.round(c.vis).toLocaleString()],["Base sales",fmt(c.bas)],["Ad basket lift (+"+s.basketLiftPct+"%)",fmt(c.adl)],["Total in-store lift",fmt(c.ins)]]);
+  if (p.has("rmn"))        mkCard(vc,"Retail Media (RMN)","&#128250;",fmtM(c.ti)+" impressions &middot; $"+s.cpm+" CPM",c.rmn,"#F7AF14",[["Impressions/session",Math.round(c.ips)],["Annual impressions",fmtM(c.ti)],["CPM","$"+s.cpm],["Total RMN value",fmt(c.rmn)]]);
+  if (p.has("loyalty"))    mkCard(vc,"Loyalty Program","&#11088;",s.loyaltySignupRate+"% signup &middot; $"+s.loyaltyLTV+" LTV",c.lv,"#BFBFD7",[["Net-new signups/yr",Math.round(c.ls).toLocaleString()],["LTV per member","$"+s.loyaltyLTV],["Total loyalty value",fmt(c.lv)]]);
+  if (p.has("membership")) mkCard(vc,"Membership Program","&#128179;",s.membershipSignupRate+"% signup &middot; "+s.membershipUpgradeRate+"% upgrades",c.mt,"#C0CEBC",[["New memberships/yr",Math.round(c.ms).toLocaleString()],["Value per member","$"+s.membershipValue],["New membership value",fmt(c.mv)],["Upgrade conversions/yr",Math.round(c.us).toLocaleString()],["Upgrade value",fmt(c.uv)],["Total membership value",fmt(c.mt)]]);
+}
+
+function mkCard(con, title, icon, sub, val, col, rows) {
+  var d = document.createElement("div"); d.className="val-card";
+  var uid = "c"+Math.random().toString(36).slice(2,7);
+  var rh = rows.map(function(r){return "<div class='bd-row'><span class='bd-row-lbl'>"+r[0]+"</span><span class='bd-row-val'>"+r[1]+"</span></div>";}).join("");
+  d.innerHTML =
+    "<div class='vc-body'><div class='vc-icon-row'>"+
+    "<div class='vc-icon' style='background:"+col+"33'>"+icon+"</div>"+
+    "<span class='vc-title'>"+title+"</span></div>"+
+    "<div class='vc-sub'>"+sub+"</div>"+
+    "<div class='vc-amt'>"+fmt(val)+"<span class='vc-unit'>/ year</span></div></div>"+
+    "<div class='bd-toggle' onclick=\"togBD('"+uid+"')\">How it&#39;s calculated <span class='bd-arrow' id='a-"+uid+"'>&#9660;</span></div>"+
+    "<div class='bd-body' id='b-"+uid+"'>"+rh+"</div>";
+  con.appendChild(d);
+}
+
+function togBD(uid) {
+  document.getElementById("b-"+uid).classList.toggle("open");
+  document.getElementById("a-"+uid).classList.toggle("open");
+}
+</script>
+</body>
+</html>
