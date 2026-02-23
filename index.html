@@ -232,15 +232,15 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
       </div>
     </div>
     <div id="val-cards"></div>
-    <p class="footnote">All values represent incremental program value attributable to the EV charging touchpoint. Default benchmarks are based on Electric Era customer data and industry research. Adjust inputs to match your store profile.</p>
+    <p class="footnote">All values represent incremental program value attributable to the EV charging touchpoint. Default benchmarks are for illustrative purposes and represent a good performing location based on Electric Era customer data and industry research. Adjust inputs to match your store profile.</p>
   </div>
 </div>
 
 <script>
 var DEF = {
-  grocery:     {sessionsPerDay:80,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,basketLiftPct:12,incrementalityRate:65,cpm:28,screensPerCharger:1,viewabilityRate:72,loyaltySignupRate:18,loyaltyLTV:320,repeatVisitFrequency:2.4,membershipSignupRate:4,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90},
-  bigbox:      {sessionsPerDay:60,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,basketLiftPct:15,incrementalityRate:60,cpm:32,screensPerCharger:1,viewabilityRate:75,loyaltySignupRate:12,loyaltyLTV:280,repeatVisitFrequency:1.8,membershipSignupRate:8,membershipValue:60,membershipUpgradeRate:5,membershipUpgradeValue:60},
-  convenience: {sessionsPerDay:120,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,basketLiftPct:20,incrementalityRate:70,cpm:22,screensPerCharger:1,viewabilityRate:68,loyaltySignupRate:22,loyaltyLTV:140,repeatVisitFrequency:3.2,membershipSignupRate:3,membershipValue:60,membershipUpgradeRate:1,membershipUpgradeValue:40}
+  grocery:     {sessionsPerDay:30,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,basketLiftPct:12,incrementalityRate:65,cpm:30,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:12,loyaltyLTV:220,repeatVisitFrequency:2.1,membershipSignupRate:3,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90},
+  bigbox:      {sessionsPerDay:30,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,basketLiftPct:15,incrementalityRate:60,cpm:60,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:8,loyaltyLTV:280,repeatVisitFrequency:1.3,membershipSignupRate:4,membershipValue:60,membershipUpgradeRate:3,membershipUpgradeValue:60},
+  convenience: {sessionsPerDay:40,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,basketLiftPct:20,incrementalityRate:70,cpm:22,screensPerCharger:1,viewabilityRate:90,loyaltySignupRate:15,loyaltyLTV:90,repeatVisitFrequency:2.8,membershipSignupRate:2,membershipValue:50,membershipUpgradeRate:1,membershipUpgradeValue:50}
 };
 var BCOL = {instore:"#28282D",rmn:"#F8B918",loyalty:"#BFBFD7",membership:"#C0CEBC"};
 var BNAME = {instore:"In-Store",rmn:"Media",loyalty:"Loyalty",membership:"Member"};
@@ -315,18 +315,18 @@ function mkSl(key, lbl, min, max, step, unit, tip, el) {
 function g(id){var e=document.getElementById(id);e.innerHTML="";return e;}
 
 function buildInputs() {
-  mkSl("sessionsPerDay","Sessions per day",10,300,5,"","Total EV charging sessions across all chargers per day.",g("core-inputs"));
+  mkSl("sessionsPerDay","Sessions per day",10,200,5,"","Total EV charging sessions across all chargers per day.",g("core-inputs"));
   mkSl("dwellMinutes","Average dwell time",10,60,1," min","Average minutes a driver spends at the charger.",document.getElementById("core-inputs"));
   mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",document.getElementById("core-inputs"));
 
   mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",g("instore-main"));
   mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for incremental in-store visitors.",document.getElementById("instore-main"));
   mkSl("basketLiftPct","Basket lift from personalized ads",0,40,1,"%","Incremental basket size increase driven by charger advertising.",g("instore-adv"));
-  mkSl("incrementalityRate","Incrementality rate",20,95,1,"%","% of visits truly incremental to the charger touchpoint.",document.getElementById("instore-adv"));
+  mkSl("incrementalityRate","Incrementality rate",10,95,1,"%","% of visits truly incremental to the charger touchpoint.",document.getElementById("instore-adv"));
 
-  mkSl("cpm","CPM",5,80,1,"$","Cost per thousand impressions for your RMN.",g("rmn-main"));
+  mkSl("cpm","CPM",10,100,1,"$","Cost per thousand impressions for your RMN.",g("rmn-main"));
   mkSl("screensPerCharger","Screens per charger",1,3,1,"","Number of ad screens on each charging unit.",g("rmn-adv"));
-  mkSl("viewabilityRate","Viewability rate",30,95,1,"%","% of ad slots resulting in a viewable impression.",document.getElementById("rmn-adv"));
+  mkSl("viewabilityRate","Viewability rate",50,100,1,"%","% of ad slots resulting in a viewable impression.",document.getElementById("rmn-adv"));
 
   mkSl("loyaltySignupRate","New loyalty signup rate",1,50,1,"%","% of sessions resulting in a net-new loyalty enrollment.",g("loyalty-main"));
   mkSl("loyaltyLTV","Lifetime value per new member",50,1000,10,"$","Incremental LTV of a loyalty member acquired at the charger.",document.getElementById("loyalty-main"));
