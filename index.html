@@ -357,7 +357,7 @@ function calc() {
   var s = ST.inp, a = s.sessionsPerDay*365;
   var vis = a*(s.conversionRate/100)*(s.incrementalityRate/100);
   var bas = vis*s.basketSize, adl = vis*s.basketSize*(s.basketLiftPct/100);
-  var ips = (s.dwellMinutes/0.5)*(s.viewabilityRate/100), ti = a*s.chargers*ips;
+  var ips = a*(s.screensPerCharger)*(s.viewabilityRate/100), ti = a*s.chargers*ips;
   var ls = a*(s.loyaltySignupRate/100), lv = ls*s.loyaltyLTV;
   var ms = a*(s.membershipSignupRate/100), mv = ms*s.membershipValue;
   var us = a*(s.membershipUpgradeRate/100), uv = us*s.membershipUpgradeValue;
