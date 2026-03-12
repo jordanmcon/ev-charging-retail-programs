@@ -188,12 +188,12 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
     </g>
     <path class="st0" d="M155.38,135c0,5.26-4.27,9.52-9.55,9.52s-9.55-4.26-9.55-9.52,4.27-9.52,9.55-9.52,9.55,4.26,9.55,9.52ZM184.62,135c0,5.26,4.27,9.52,9.55,9.52s9.55-4.26,9.55-9.52-4.27-9.52-9.55-9.52c-5.27,0-9.55,4.26-9.55,9.52ZM205,90h-23.35l-9.84,17.03h33.19c16.99,0,27.97,10.98,27.97,27.97s-10.98,27.97-27.97,27.97h-17.14l-9.84,17.03h26.98c26.4,0,45-18.6,45-45s-18.6-45-45-45ZM135,162.97c-16.99,0-27.97-10.98-27.97-27.97s10.98-27.97,27.97-27.97h17.14l9.84-17.03h-26.98c-26.4,0-45,18.6-45,45s18.6,45,45,45h23.35l9.84-17.03h-33.19Z"/>
   </svg>
-  <div class="header-tag"><span class="bolt">&#9889;</span> Retail Program Value Calculator</div>
+  <div class="header-tag">Retail Program Value Calculator</div>
 </header>
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-eyebrow"><span>&#9889;</span> EV Charging &times; Retail Programs</div>
+    <div class="hero-eyebrow">EV Charging &times; Retail Programs</div>
     <h1>What is a charging session <span>really worth</span> to your store?</h1>
     <p>An EV fast charge creates 20&ndash;40 minutes of captive engagement. Calculate the incremental value of extending your existing retail programs to that moment.</p>
   </div>
@@ -212,7 +212,7 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
     <div class="format-grid">
       <button class="fmt-btn" data-format="grocery"     onclick="selFmt(this)">Grocery</button>
       <button class="fmt-btn" data-format="bigbox"      onclick="selFmt(this)">Big Box / Warehouse</button>
-      <button class="fmt-btn" data-format="convenience" onclick="selFmt(this)">Gas / Convenience</button>
+      <button class="fmt-btn" data-format="convenience" onclick="selFmt(this)">Fuel / Convenience / QSR</button>
     </div>
     <div class="mini-label">What retail programs do you have (or want to consider)?</div>
     <div class="prog-grid">
@@ -269,7 +269,7 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 
   <div id="out-panel">
     <div class="tot-hero">
-      <div class="tot-eyebrow"><span>&#9889;</span> Total incremental value</div>
+      <div class="tot-eyebrow">Total incremental value</div>
       <div class="tot-val" id="tot-val">$0</div>
       <div class="tot-sub" id="tot-sub">per year</div>
       <div class="bar-chart" id="bar-chart"></div>
@@ -383,7 +383,7 @@ function buildInputs() {
   mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",ci);
   mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",ci);
   mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for an in-store visitor.",ci);
-  mkSl("incrementalityRate","Incrementality rate",10,95,1,"%","% of in-store visits that are truly incremental — would not have happened without the charger.",ci);
+  mkSl("incrementalityRate","EV incrementality rate",10,95,1,"%","% of in-store visits that are truly incremental — would not have happened without the charger.",ci);
 
   // RMN — direct media + in-store lift inputs
   var rm = g("rmn-main"), ra = g("rmn-adv");
@@ -593,7 +593,6 @@ function mkCard(con, title, icon, sub, directVal, liftVal, col, rows) {
   d.innerHTML =
     "<div class='vc-body'>" +
       "<div class='vc-icon-row'>" +
-        "<div class='vc-icon' style='background:"+col+"33'>"+icon+"</div>" +
         "<span class='vc-title'>"+title+"</span>" +
       "</div>" +
       "<div class='vc-sub'>"+sub+"</div>" +
