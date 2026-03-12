@@ -286,15 +286,15 @@ input[type=range]{position:absolute;width:100%;opacity:0;cursor:pointer;height:2
 
 <script>
 var DEF = {
-  grocery:     {sessionsPerDay:30,dwellMinutes:28,chargers:4,conversionRate:42,basketSize:95,incrementalityRate:65,
+  grocery:     {sessionsPerDay:30,dwellMinutes:28,conversionRate:42,basketSize:95,incrementalityRate:65,
                 rmnConvUplift:8,basketLiftPct:12,cpm:30,screensPerCharger:1,viewabilityRate:90,
                 loyaltySignupRate:12,loyaltyLTV:220,loyaltyVisitFreq:2.1,
                 membershipSignupRate:3,membershipValue:180,membershipUpgradeRate:2,membershipUpgradeValue:90,membershipVisitFreq:1.8},
-  bigbox:      {sessionsPerDay:30,dwellMinutes:38,chargers:6,conversionRate:38,basketSize:152,incrementalityRate:60,
+  bigbox:      {sessionsPerDay:30,dwellMinutes:38,conversionRate:38,basketSize:152,incrementalityRate:60,
                 rmnConvUplift:6,basketLiftPct:15,cpm:60,screensPerCharger:1,viewabilityRate:90,
                 loyaltySignupRate:8,loyaltyLTV:280,loyaltyVisitFreq:1.3,
                 membershipSignupRate:4,membershipValue:60,membershipUpgradeRate:3,membershipUpgradeValue:60,membershipVisitFreq:1.2},
-  convenience: {sessionsPerDay:40,dwellMinutes:22,chargers:4,conversionRate:55,basketSize:18,incrementalityRate:70,
+  convenience: {sessionsPerDay:40,dwellMinutes:22,conversionRate:55,basketSize:18,incrementalityRate:70,
                 rmnConvUplift:10,basketLiftPct:20,cpm:22,screensPerCharger:1,viewabilityRate:90,
                 loyaltySignupRate:15,loyaltyLTV:90,loyaltyVisitFreq:2.8,
                 membershipSignupRate:2,membershipValue:50,membershipUpgradeRate:1,membershipUpgradeValue:50,membershipVisitFreq:2.2}
@@ -378,9 +378,7 @@ function g(id){var e=document.getElementById(id);e.innerHTML="";return e;}
 function buildInputs() {
   // Core — shared foundation + in-store params
   var ci = g("core-inputs");
-  mkSl("sessionsPerDay","Sessions per day",10,200,5,"","Total EV charging sessions across all chargers per day.",ci);
-  mkSl("dwellMinutes","Average dwell time",10,60,1," min","Average minutes a driver spends at the charger.",ci);
-  mkSl("chargers","Number of chargers",1,20,1,"","Total charging stalls at this location.",ci);
+  mkSl("sessionsPerDay","Sessions per day",10,200,5,"","Total EV charging sessions per day. Drives annual impressions, signups, and store visits.",ci);
   mkSl("conversionRate","In-store conversion rate",5,85,1,"%","% of EV drivers who enter your store during their charge session.",ci);
   mkSl("basketSize","Average basket size",5,400,5,"$","Typical transaction size for an in-store visitor.",ci);
   mkSl("incrementalityRate","EV incrementality rate",10,95,1,"%","% of in-store visits that are truly incremental — would not have happened without the charger.",ci);
@@ -435,7 +433,7 @@ function calc() {
   // ── RMN ──
   // Direct: media revenue from impressions
   var ips    = s.screensPerCharger * (s.viewabilityRate/100);
-  var ti     = ann * s.chargers * ips;
+  var ti     = ann * ips;
   var rmnDirect = (ti/1000) * s.cpm;
   // In-store lift: conversion uplift drives extra visits with bigger baskets
   var rmnExtraVisits  = ann * (s.rmnConvUplift/100) * incr;
